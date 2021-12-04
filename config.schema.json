@@ -1,16 +1,82 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
-  "pluginType": "platform",
-  "singular": true,
-  "schema": {
-    "type": "object",
-    "properties": {
-      "name": {
-        "title": "Name",
-        "type": "string",
-        "required": true,
-        "default": "Example Dynamic Platform"
+    "pluginAlias": "BatteryTender",
+    "pluginType": "platform",
+    "singular": true,
+    "footerDisplay": "BatteryTender Configuration",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "required": true,
+          "default": "BatteryTender",
+          "placeholder": "e.g. BatteryTender"
+        },
+        "auth": {
+          "title": "Authorization",
+          "type": "object",
+          "properties": {
+            "username": {
+              "title": "BatteryTender Username",
+              "type": "string",
+              "required": true
+            },
+            "password": {
+              "title": "BatteryTender Password",
+              "type": "string",
+              "required": true
+            }
+          }
+        },
+          "deviceRefresh": {
+          "title": "Device Refresh Interval",
+          "type": "integer",
+          "default": 1,
+          "description": "Poll interval to obtain device updates status in hours (Note: BatteryTender device are between 4-6 hour daily).",
+          "minimum": 1,
+          "maximum": 24
+        },
+        "excludedDevices": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Device IDs"
+          }
+        }
       }
-    }
+    },
+    "layout": [{
+        "type": "fieldset",
+        "items": [
+          "name",
+          "auth.username",
+          "auth.password",
+          "deviceRefresh"
+        ]
+      },
+      {
+        "type": "fieldset",
+        "expandable": true,
+        "title": "Advanced Options",
+        "items": [
+          {
+            "key": "excludedDevices",
+            "title": "Excluded Devices",
+            "description": "A list of devices to exclude from HomeKit. Use device ID found in device properties",
+            "add": "Add Another Device",
+            "type": "array",
+            "items": [
+              {
+                "type": "fieldset",
+                "items": [
+                  "excludedDevices[]"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
-}
+  
