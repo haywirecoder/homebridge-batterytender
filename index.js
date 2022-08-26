@@ -22,22 +22,23 @@ class BatteryTenderPlatform {
   this.log = log;
   this.api = api;
   this.name = config.name;
+  this.config = config;
   this.accessories = [];
   
   // Check if authentication information has been provided.
-  /*try{
+  try{
     if ((this.config.auth.email == "") || (this.config.auth.password == ""))
     {
-      this.log.error('Plug-in configuration error: Flo authentication information not provided.');
+      this.log.error('Plug-in configuration error: BatteryTender authentication information not provided.');
       // terminate plug-in initization
       return;
     }
   }
   catch(err) {
-    this.log.error('Plug-in configuration error: Flo authentication information not provided.');
+    this.log.error('Plug-in configuration error: BatteryTender authentication information not provided.');
     // terminate plug-in initization
     return;
-  }*/
+  }
 
   this.bt = new btengine (log, config);
  
@@ -68,7 +69,7 @@ class BatteryTenderPlatform {
 
       let currentDevice = this.bt.batteryTenderDevicesMonitors[i];
       this.log.debug("Processing Device", currentDevice);
-      var sensorAccessory = new voltageguage(this.bt, currentDevice, this.config, this.log, Service, Characteristic, UUIDGen);
+      var sensorAccessory = new voltageguage(this.bt, currentDevice, this.config, this.log, Service, Characteristic, UUIDGen, HomebridgeAPI);
       // check the accessory was not restored from cache
       var foundAccessory = this.accessories.find(accessory => accessory.UUID === sensorAccessory.uuid)
       if (!foundAccessory) {
@@ -141,22 +142,5 @@ removeAccessory(accessory, updateIndex) {
     // add the restored accessory to the accessories cache so we can track if it has already been registered
     this.accessories.push(accessory);
   } 
-  
-  ex_getService(name) {
-    if (name instanceof Service)
-        return name;
-
-    for (var index in this.services) {
-        var service = this.services[index];
-        
-        if (typeof name === 'string' && (service.displayName === name || service.name === name))
-            return service;
-        else if (typeof name === 'function' && ((service instanceof name) || (name.UUID === service.UUID)))
-            return service;
-      }
-    
-}
-
-
 
 }
