@@ -1,3 +1,7 @@
+//These characteristics are under custom service E863F007-079E-48FF-8F27-9C2605A29F52 and are used by Elgato accessories 
+// to exchange logs with Eve.app. Note that the accessory may have to include some of the custom characteristics 
+// https://gist.github.com/simont77/3f4d4330fa55b83f8ca96388d9004e7d
+
 const WATTS = 'E863F10D-079E-48FF-8F27-9C2605A29F52';
 const TOTALWATTS = 'E863F10C-079E-48FF-8F27-9C2605A29F52';
 const VOLTAGE = 'E863F10A-079E-48FF-8F27-9C2605A29F52';

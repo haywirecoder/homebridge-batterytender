@@ -14,6 +14,9 @@ class voltageGuageSensor {
     this.soc = device.soc;
     this.uuid = UUIDGen.generate(this.id);
     this.bt = bt;
+    this.LowBatteryLevel = config.batteryWarning || 30;
+    this.plugOnState = parseFloat(config.switchAutoOn).toFixed(2) || 11.99;
+    this.plugOnStateReverse = config.switchStateReverse || false;
     this.bt.on(this.id, this.refreshState.bind(this));
     this.powerMonitor = EvePowerMonitoringService(Homebridge);
     this.voltage = EveVoltage(Homebridge);
@@ -38,7 +41,8 @@ class voltageGuageSensor {
     if(outletService == undefined) outletService = this.accessory.addService(this.Service.Outlet,this.name); 
     outletService.setCharacteristic(this.Characteristic.Name, this.name); 
     outletService.getCharacteristic(this.Characteristic.On)
-          .on("get",  async callback => this.getPowerState(callback));
+          .on("get",  async callback => this.getPowerState(callback))
+          .on('set', async (state, callback) => this.setPowerState(state, callback));   
 			
     var powerMeterService = this.accessory.getService(this.powerMonitor);
     if (powerMeterService == undefined) {
@@ -64,22 +68,36 @@ class voltageGuageSensor {
 
   }
 
-  // Handle requests to get the current value of the "Current Ambient Light Level" characteristic
-  async getPowerState(callback) {
-    // set this to a valid value for On
-    const currentValue = 0;
-    return callback(null, currentValue);
+  // Handle requests to set and get the current value of the for outlet
+  async setPowerState(value,callback){
+    var currentValue =false;
+    // set power status based  on threshold set within configuration file
+    if (this.devicevoltage < this.plugOnState) currentValue = true;
+    if (this.plugOnStateReverse) currentValue = !currentValue;
+
+    // Get the button service and updated outlet soon after set function is complete 
+    var outletService = this.accessory.getService(this.Service.Outlet);
+    setTimeout(function () {outletService.updateCharacteristic(this.Characteristic.On,currentValue)}.bind(this),1000);
+    return callback(null);
   }
-  // Handle requests to get the current value of the "Status Low Battery" characteristic
-   
-  async getStatusLowBattery(callback) {
-    // set this to a valid value for StatusLowBattery
-    var currentValue = this.Characteristic.StatusLowBattery.BATTERY_LEVEL_NORMAL;
-    if (this.soc < 20) currentValue = this.Characteristic.StatusLowBattery.BATTERY_LEVEL_LOW;
-    this.log.debug('getStatusLowBattery  StatusLowBattery - ', currentValue);
+  async getPowerState(callback) {
+    var currentValue =false;
+    // set power status based  on threshold set within configuration file
+    if (this.devicevoltage < this.plugOnState) currentValue = true;
+    if (this.plugOnStateReverse) currentValue = !currentValue;
     return callback(null, currentValue);
   }
 
+  // Handle requests to get the current value of the "Status Low Battery" characteristic
+  async getStatusLowBattery(callback) {
+  
+    var currentValue = this.Characteristic.StatusLowBattery.BATTERY_LEVEL_NORMAL;
+    // set power status based  on threshold set within configuration file
+    if (this.soc < this.plugsOnState) currentValue = 1;
+    if (this.soc < this.LowBatteryLevel) currentValue = this.Characteristic.StatusLowBattery.BATTERY_LEVEL_LOW;
+    this.log.debug('getStatusLowBattery  StatusLowBattery - ', currentValue);
+    return callback(null, currentValue);
+  }
   async getBatteryLevel(callback) {
     this.log.debug('getBatteryLevel: BatteryLevel - ', this.soc);
     // set this to current battery level
@@ -88,9 +106,10 @@ class voltageGuageSensor {
   }
 
   async getVolt(callback) {
-    this.log.debug('getVolt: Voltage - ', this.devicevoltag);
+    this.log.debug('getVolt: Voltage - ', this.devicevoltage);
     // set this to current battery level
-    const currentValue =  this.devicevoltage;
+    // Round voltage to lowest value. Eve doesn't display floating value.
+    const currentValue =  Math.floor(this.devicevoltage);
     return callback(null, currentValue);
   }
   
