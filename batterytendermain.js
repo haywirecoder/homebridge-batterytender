@@ -84,9 +84,13 @@ class BatteryTender extends EventEmitter {
 
     async backgroundRefresh() {
 
-        this.log("Battery Monitor Device Refresh...");
+        this.log.debug("Battery Monitor Device Refresh...");
         var url = HOST + MONITOR_PATH;
-        
+        if (this.deviceRefreshHandle) 
+        {
+            clearTimeout(this.deviceRefreshHandle);
+            this.deviceRefreshHandle = null;
+        }
         try {
             const response = await needle("get", url,
             {
@@ -94,7 +98,6 @@ class BatteryTender extends EventEmitter {
 
             });
             var device_response = response;
-            this.log(device_response);
             this.log.debug("Battery Raw Data: ", device_response.body,  "\n");
             var deviceUpdateDate;
             for(var i in device_response.body.monitors)
@@ -124,11 +127,10 @@ class BatteryTender extends EventEmitter {
         catch(err) {
             // Something went wrong, display message and return negative return code
             this.log.error("Battery Monitoring Device Refresh Error: ", err.message);
-            return false;
-        } ;
-        // this.deviceRefreshHandle = setTimeout(() => this.backgroundRefresh(), this.deviceRefreshTime); 
+        };
+        // set for next polling interval
+        this.deviceRefreshHandle = setTimeout(() => this.backgroundRefresh(), this.deviceRefreshTime); 
     }
-
 }
-          
+
 module.exports = BatteryTender;

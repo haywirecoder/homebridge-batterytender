@@ -1,12 +1,10 @@
 {
   "name": "homebridge-batterytender",
-  "version": "0.1.0",
+  "displayName": "Homebridge Battery Tender",
+  "version": "1.0.0",
   "description": "Battery Tender module for Homebridge",
   "author": "Haywirecoder",
   "license": "MIT",
-  "keywords": [
-    "homebridge-plugin"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/haywirecoder/homebridge-batterytender"
@@ -19,7 +17,14 @@
     "node": ">=14.17.5"
   },
   "dependencies": {
-    "node-persist": "^2.1.0",
-    "needle": "^3.0.0"
-  }
+    "needle": "^3.1.0",
+    "node-persist": "^2.1.0"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "homebridge",
+    "homekit",
+    "Battery Tender",
+    "deltran"
+  ]
 }

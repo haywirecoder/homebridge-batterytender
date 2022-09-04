@@ -27,7 +27,7 @@ class BatteryTenderPlatform {
   
   // Check if authentication information has been provided.
   try{
-    if ((this.config.auth.email == "") || (this.config.auth.password == ""))
+    if ((this.config.auth.email == "") || (this.config.auth.password == "") || (!this.config.auth.password) || (!this.config.auth.email))
     {
       this.log.error('Plug-in configuration error: BatteryTender authentication information not provided.');
       // terminate plug-in initization
@@ -39,8 +39,8 @@ class BatteryTenderPlatform {
     // terminate plug-in initization
     return;
   }
-
-  this.bt = new btengine (log, config);
+  
+  this.bt = new btengine (log, this.config);
  
   // When this event is fired it means Homebridge has restored all cached accessories from disk.
   // Dynamic Platform plugins should only register new accessories after this event was fired,
@@ -68,7 +68,7 @@ class BatteryTenderPlatform {
     for (var i = 0; i < this.bt.batteryTenderDevicesMonitors.length; i++) {
 
       let currentDevice = this.bt.batteryTenderDevicesMonitors[i];
-      this.log.debug("Processing Device", currentDevice);
+      this.log(`Configuring ${currentDevice.name} with Device ID: ${currentDevice.deviceId} `)
       var sensorAccessory = new voltageguage(this.bt, currentDevice, this.config, this.log, Service, Characteristic, UUIDGen, HomebridgeAPI);
       // check the accessory was not restored from cache
       var foundAccessory = this.accessories.find(accessory => accessory.UUID === sensorAccessory.uuid)
@@ -102,14 +102,11 @@ async orphanAccessory() {
     // determine if accessory is currently a device in flo system, thus should remain
     foundAccessory = this.bt.batteryTenderDevicesMonitors.find(device => UUIDGen.generate(device.deviceId.toString()) === accessory.UUID)
     if (!foundAccessory) {
-      // determine if an optional compoment, thus should remain
-      foundAccessory = this.optionalAccessories.find(optionalAccessory => optionalAccessory.uuid === accessory.UUID);
-      if (!foundAccessory) {
           this.removeAccessory(accessory,true);
-      }
     }
   }
 }
+
 
 //Add accessory to homekit dashboard
 addAccessory(device) {
