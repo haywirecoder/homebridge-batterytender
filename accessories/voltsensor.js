@@ -8,20 +8,21 @@ class voltageGuageSensor {
     this.Characteristic = Characteristic;
     this.Service = Service;
     this.name = device.name;
-    this.id = device.deviceId.toString();
+    this.deviceid = device.deviceId.toString();
     this.log = log;
     this.devicevoltage = device.voltage; 
     this.soc = device.soc;
-    this.uuid = UUIDGen.generate(this.id);
-    this.bt = bt;
+    this.uuid = UUIDGen.generate(this.deviceid);
     this.LowBatteryLevel = config.batteryWarning || 30;
     this.plugOnState = parseFloat(config.switchAutoOn).toFixed(2) || 11.99;
     this.plugOnStateReverse = config.switchStateReverse || false;
-    this.bt.on(this.id, this.refreshState.bind(this));
     this.powerMonitor = EvePowerMonitoringService(Homebridge);
     this.voltage = EveVoltage(Homebridge);
     // Create voltage characteristic for easy reference
     this.Characteristic = Object.defineProperty(Homebridge.hap.Characteristic, 'volt', {value: this.voltage});
+    // Register device for updates
+    this.bt = bt;
+    this.bt.on(this.deviceid, this.refreshState.bind(this));
   }
 
   refreshState(eventData)
@@ -35,7 +36,8 @@ class voltageGuageSensor {
     this.accessory = accessory;
     this.accessory.getService(this.Service.AccessoryInformation)
         .setCharacteristic(this.Characteristic.Manufacturer, 'Deltan')
-        .setCharacteristic(this.Characteristic.SerialNumber, this.id);
+        .setCharacteristic(this.Characteristic.Model, 'Battery Tender')
+        .setCharacteristic(this.Characteristic.SerialNumber, this.deviceid);
     
     var outletService = this.accessory.getService(this.Service.Outlet);
     if(outletService == undefined) outletService = this.accessory.addService(this.Service.Outlet,this.name); 
@@ -108,8 +110,8 @@ class voltageGuageSensor {
   async getVolt(callback) {
     this.log.debug('getVolt: Voltage - ', this.devicevoltage);
     // set this to current battery level
-    // Round voltage to lowest value. Eve doesn't display floating value.
-    const currentValue =  Math.floor(this.devicevoltage);
+    // Post the voltage as extended attribute in Homekit (this value maybe rounded to closest whole number)
+    const currentValue =  this.devicevoltage;
     return callback(null, currentValue);
   }
   
