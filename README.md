@@ -11,7 +11,7 @@
 
 
 # Homebridge Plug-In for Deltran Battery Monitor Tender
-A Homebridge plug-in to integrate the Deltran Battery Monitor Tender (https://www.batterytender.com/battery-tender-wireless-battery-monitor_2) Homebridge. This module exposed monitor as an outlet. With outlet change state to indicated voltage level and battery indicator for percentage of charge. This module also uses Eve Home attribute to report voltage.
+A Homebridge plug-in to integrate the Deltran Battery Monitor Tender (https://www.batterytender.com/battery-tender-wireless-battery-monitor_2) into Homebridge. This module exposed monitor as an outlet. With outlet changing state to indicate voltage drop level and battery indicator for percentage of charge. This module also uses Eve Home volt attribute to report voltage.
 
 ## Limitation:
 * This module has only been tested with Deltran Battery Tender® Wireless Battery Monitor.

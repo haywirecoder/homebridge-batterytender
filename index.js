@@ -88,6 +88,8 @@ class BatteryTenderPlatform {
      // Clean accessories with no association with Flo devices.
      this.orphanAccessory();
      // Start background process to poll devices.
+     this.log.info(`Battery Tender Monitor background polling process started. Device will be polled every ${this.config.deviceRefresh} hour(s).`);     
+       
      this.bt.startPollingProcess();
   };
 
