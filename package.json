@@ -1,7 +1,7 @@
 {
   "name": "homebridge-batterytender",
   "displayName": "Homebridge Battery Tender",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Battery Tender module for Homebridge",
   "author": "Haywirecoder",
   "license": "MIT",

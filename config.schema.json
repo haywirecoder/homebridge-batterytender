@@ -41,12 +41,12 @@
           "title": "Battery Indicator Warning Level",
           "type": "integer",
           "default": 30,
-          "description": "Battery level when battery warnng indicator level is display in HomeKit.",
+          "description": "Battery Tender level to indicated when battery warning icon level is display in HomeKit.",
           "minimum": 20,
           "maximum": 90
         },
         "switchAutoOn": {
-          "title": "Automaticly Turn-On Outlet for Voltage Level",
+          "title": "Automatically Turn-On Outlet for Voltage Level",
           "type": "string",
           "default": 11.99,
           "description": "Plug will switch to On state when battery voltage falls to this level."

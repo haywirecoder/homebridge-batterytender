@@ -23,13 +23,13 @@ A Homebridge plug-in to integrate the Deltran Battery Monitor Tender (https://ww
 
 | Attributes        | Description                                                                                                              |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Email              | Email associated wtih Battery Tender. This is a required value.                    |
+| Email              | Email associated with Battery Tender. This is a required value.                    |
 | password              | Battery Tender password. This is a required value.                                                                 |
 | deviceRefresh        | Polling interval to obtain status of Flo devices, provide in hours. Default to each hour.          |
 | batteryWarning          | Battery Tender level to indicated when battery warning icon level is display in HomeKit. Default to <i>30</i>, this is an optional value.                                
 | switchAutoOn| The outlet will automated turn-on to indicate the monitored battery has drop and need to be charge.   Default to <i>11.99 volts</i>, this is an optional value.                                                        |
 | switchStateReverse | Reverse the outlet on and off state. The setting will result On when battery is above monitor voltage state and Off when the value drop below voltage.  Default to <i>false</i>, this is an optional value.        
-| excludedDevices         | Devices to surpress from HomeKit. This is an optional value. | |
+| excludedDevices         | Devices to suppress from HomeKit. This is an optional value. | |
 
 
 

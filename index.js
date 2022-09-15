@@ -1,6 +1,6 @@
 "use strict";
 const btengine = require('./batterytendermain');
-const voltageguage = require('./accessories/voltsensor');
+const batteryMonitor = require('./accessories/batteryMonitor');
 
 const PLUGIN_NAME = 'homebridge-batterytender';
 const PLATFORM_NAME = 'BatteryTender';
@@ -30,13 +30,13 @@ class BatteryTenderPlatform {
     if ((this.config.auth.email == "") || (this.config.auth.password == "") || (!this.config.auth.password) || (!this.config.auth.email))
     {
       this.log.error('Plug-in configuration error: BatteryTender authentication information not provided.');
-      // terminate plug-in initization
+      // terminate plug-in initialization
       return;
     }
   }
   catch(err) {
     this.log.error('Plug-in configuration error: BatteryTender authentication information not provided.');
-    // terminate plug-in initization
+    // terminate plug-in initialization
     return;
   }
   
@@ -50,11 +50,11 @@ class BatteryTenderPlatform {
 
     this.initialLoad =  this.bt.init().then (() => {
        this.log.debug('Initialization Successful.');
-       // Once devices are discovered update Homekit assessories
+       // Once devices are discovered update Homekit accessories
        this.refreshAccessories();
     }).catch(err => {
-      this.log.error('BatterTender Initization Failure:', err);
-      // terminate plug-in initization
+      this.log.error('BatterTender initialization Failure:', err);
+      // terminate plug-in initialization
       return;
     });
     
@@ -64,12 +64,13 @@ class BatteryTenderPlatform {
   async refreshAccessories() {
   
     // Process each flo devices and create accessories within the platform.
+    if (this.bt.batteryTenderDevicesMonitors.length <=0 ) return;
     this.log.info("Loading Devices...");
     for (var i = 0; i < this.bt.batteryTenderDevicesMonitors.length; i++) {
 
       let currentDevice = this.bt.batteryTenderDevicesMonitors[i];
       this.log(`Configuring ${currentDevice.name} with Device ID: ${currentDevice.deviceId} `)
-      var sensorAccessory = new voltageguage(this.bt, currentDevice, this.config, this.log, Service, Characteristic, UUIDGen, HomebridgeAPI);
+      var sensorAccessory = new batteryMonitor(this.bt, currentDevice, this.config, this.log, Service, Characteristic, UUIDGen, HomebridgeAPI);
       // check the accessory was not restored from cache
       var foundAccessory = this.accessories.find(accessory => accessory.UUID === sensorAccessory.uuid)
       if (!foundAccessory) {
@@ -113,7 +114,7 @@ async orphanAccessory() {
 //Add accessory to homekit dashboard
 addAccessory(device) {
 
-  this.log.info('Adding accessory');
+  this.log.debug('Adding accessory');
       try {
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [device.accessory]);
         this.accessories.push(device.accessory);
@@ -124,7 +125,7 @@ addAccessory(device) {
 
 //Remove accessory to homekit dashboard
 removeAccessory(accessory, updateIndex) {
-  this.log.info('Removing accessory:',accessory.displayName );
+  this.log.debug('Removing accessory:',accessory.displayName );
     if (accessory) {
         this.api.unregisterPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
     }
@@ -137,7 +138,7 @@ removeAccessory(accessory, updateIndex) {
   // This function is invoked when homebridge restores cached accessories from disk at startup.
   // It should be used to setup event handlers for characteristics and update respective values.
   configureAccessory(accessory) {
-    this.log.info('Loading accessory from cache:', accessory.displayName);
+    this.log.debug('Loading accessory from cache:', accessory.displayName);
     // add the restored accessory to the accessories cache so we can track if it has already been registered
     this.accessories.push(accessory);
   } 
