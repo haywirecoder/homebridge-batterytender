@@ -1,5 +1,5 @@
 [![NPM Version](https://img.shields.io/npm/v/homebridge-batterytender.svg?style=flat-square)](https://www.npmjs.com/package/homebridge-batterytender)
-
+[![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
 
 <p align="center">
 <img src="https://www.batterytender.com/Battery%20Tender%20Website%20Images/081-0172.BatteryTender.07.Lifestyle1.jpg?resizeid=12&resizeh=1000&resizew=1000" width="150">
